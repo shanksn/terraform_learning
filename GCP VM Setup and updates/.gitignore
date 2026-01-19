@@ -28,4 +28,4 @@ terraform.rc
 !terraform.tfvars.example
 
 # Ignore lock files (optional, some teams prefer to commit this)
-.terraform.lock.hcl
+# .terraform.lock.hcl

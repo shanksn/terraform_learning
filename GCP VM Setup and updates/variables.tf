@@ -1,7 +1,7 @@
 variable "project_id" {
   description = "The GCP Project ID"
   type        = string
-  default     = "your-gcp-project-id"
+  default     = "biotechproject-483505"
 }
 
 variable "region" {
@@ -17,7 +17,7 @@ variable "zone" {
 variable "instance_name" {
   description = "Name of the VM instance"
   type        = string
-  default     = "my-app-server"
+  default     = "biotech-app-server"
 }
 
 variable "instance_type" {
@@ -28,7 +28,7 @@ variable "instance_type" {
 
 variable "vpc_name" {
   type    = string
-  default = "main-vpc"
+  default = "biotech-main-vpc"
 }
 
 variable "subnet_cidr" {
@@ -50,7 +50,13 @@ variable "iap_network_range" {
 }
 
 variable "bucket_name" {
-  description = "Unique name for the GCS bucket (must be globally unique)"
+  description = "Unique name for the GCS bucket"
   type        = string
-  default     = "my-web-assets-bucket-unique-id" # Change this to something unique
+  default     = "biotech-web-assets-4835051234" # Change this to something unique
+}
+
+variable "desired_status" {
+  description = "Desired status of the VM (RUNNING or TERMINATED)"
+  type        = string
+  default     = "TERMINATED"
 }
