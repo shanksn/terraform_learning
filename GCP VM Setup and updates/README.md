@@ -89,15 +89,23 @@ cd terraform_learning/GCP\ VM\ Setup\ and\ updates/
 
 ### 2. Configure Variables
 
-Edit `variables.tf` or create a `terraform.tfvars` file:
+**IMPORTANT**: Create your own `terraform.tfvars` file from the example:
+
+```bash
+cp terraform.tfvars.example terraform.tfvars
+```
+
+Then edit `terraform.tfvars` with your actual values:
 
 ```hcl
-project_id    = "your-project-id"
+project_id    = "your-actual-project-id"
 region        = "us-central1"
 zone          = "us-central1-c"
 instance_name = "your-vm-name"
-bucket_name   = "your-unique-bucket-name"
+bucket_name   = "your-globally-unique-bucket-name"
 ```
+
+**Note**: The `terraform.tfvars` file is gitignored to prevent committing sensitive information.
 
 ### 3. Authenticate with GCP
 
@@ -126,14 +134,14 @@ terraform apply
 
 ### 7. Access the VM
 
-Using IAP tunnel:
+Using IAP tunnel (replace `my-app-server` with your instance name):
 ```bash
-gcloud compute ssh biotech-app-server --zone=us-central1-c --tunnel-through-iap
+gcloud compute ssh my-app-server --zone=us-central1-c --tunnel-through-iap
 ```
 
 Access the web server through IAP:
 ```bash
-gcloud compute start-iap-tunnel biotech-app-server 80 --local-host-port=localhost:8080 --zone=us-central1-c
+gcloud compute start-iap-tunnel my-app-server 80 --local-host-port=localhost:8080 --zone=us-central1-c
 ```
 
 Then visit `http://localhost:8080` in your browser.
@@ -144,16 +152,16 @@ Then visit `http://localhost:8080` in your browser.
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `project_id` | GCP Project ID | `biotechproject-483505` |
+| `project_id` | GCP Project ID | `your-gcp-project-id` |
 | `region` | GCP Region | `us-central1` |
 | `zone` | GCP Zone | `us-central1-c` |
-| `instance_name` | VM instance name | `biotech-app-server` |
+| `instance_name` | VM instance name | `my-app-server` |
 | `instance_type` | Machine type | `e2-standard-2` |
-| `vpc_name` | VPC network name | `biotech-main-vpc` |
+| `vpc_name` | VPC network name | `main-vpc` |
 | `subnet_cidr` | Subnet CIDR range | `10.0.1.0/24` |
 | `network_tag_ssh` | Network tag for SSH access | `allow-ssh-iap` |
 | `iap_network_range` | IAP source IP range | `["35.235.240.0/20"]` |
-| `bucket_name` | GCS bucket name | `biotech-web-assets-4835051234` |
+| `bucket_name` | GCS bucket name (must be unique) | `my-web-assets-bucket-unique-id` |
 
 ### Outputs
 
@@ -217,8 +225,8 @@ gsutil cp gs://YOUR_BUCKET_NAME/index.html /var/www/html/index.html
 The VM is configured with `desired_status = "TERMINATED"` by default (line 65 in main.tf). To start the VM:
 
 ```bash
-# Start the VM
-gcloud compute instances start biotech-app-server --zone=us-central1-c
+# Start the VM (replace with your instance name)
+gcloud compute instances start my-app-server --zone=us-central1-c
 
 # Or change desired_status to "RUNNING" in main.tf and apply
 ```
@@ -241,7 +249,7 @@ gcloud compute instances start biotech-app-server --zone=us-central1-c
 - Manually test: `gsutil cp gs://BUCKET_NAME/index.html /tmp/test.html`
 
 ### NAT Issues
-- Check NAT configuration: `gcloud compute routers get-status biotech-router --region=us-central1`
+- Check NAT configuration: `gcloud compute routers get-status cloud-router --region=us-central1`
 - Verify Cloud Router is in the correct region
 
 ## Cost Considerations
@@ -266,6 +274,16 @@ Note: The storage bucket is configured with `force_destroy = true`, so it will b
 
 ## Security Best Practices
 
+### Protecting Sensitive Information
+1. **Never commit sensitive files**: The `.gitignore` file is configured to exclude:
+   - `terraform.tfvars` (contains your actual project ID and settings)
+   - `*.tfstate` files (may contain sensitive resource data)
+   - Service account key files (*.json)
+   - `.terraform/` directories
+2. **Use terraform.tfvars.example**: Always use the example file as a template
+3. **Keep credentials secure**: Never hardcode credentials in `.tf` files
+
+### GCP Security Best Practices
 1. Never commit service account keys to version control
 2. Use least privilege IAM roles
 3. Regularly rotate service account keys

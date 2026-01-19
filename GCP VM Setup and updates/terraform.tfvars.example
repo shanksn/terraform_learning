@@ -1,0 +1,27 @@
+# Example Terraform variables file
+# Copy this file to terraform.tfvars and fill in your actual values
+# DO NOT commit terraform.tfvars to version control!
+
+# Your GCP Project ID (required)
+project_id = "your-gcp-project-id"
+
+# GCP Region and Zone
+region = "us-central1"
+zone   = "us-central1-c"
+
+# VM Instance Configuration
+instance_name = "my-app-server"
+instance_type = "e2-standard-2"
+
+# Network Configuration
+vpc_name    = "main-vpc"
+subnet_cidr = "10.0.1.0/24"
+
+# Security Configuration
+network_tag_ssh    = "allow-ssh-iap"
+iap_network_range  = ["35.235.240.0/20"]
+
+# Storage Configuration
+# IMPORTANT: Bucket names must be globally unique across all of GCS
+# Consider using: your-project-name-web-assets-<random-number>
+bucket_name = "my-web-assets-bucket-unique-id"

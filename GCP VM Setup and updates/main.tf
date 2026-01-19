@@ -44,8 +44,8 @@ resource "google_storage_bucket_object" "index_html" {
 
 # 1. Define the Service Account Identity
 resource "google_service_account" "vm_sa" {
-  account_id   = "biotech-vm-sa"
-  display_name = "Service Account for Biotech VM"
+  account_id   = "vm-service-account"
+  display_name = "Service Account for VM"
 }
 
 # 2. Assign the "Storage Object Viewer" role to this Service Account
@@ -114,14 +114,14 @@ resource "google_compute_firewall" "allow_iap_traffic" {
 
 # 1. Create a Cloud Router (Required for NAT)
 resource "google_compute_router" "router" {
-  name    = "biotech-router"
+  name    = "cloud-router"
   network = google_compute_network.custom_vpc.id
   region  = var.region
 }
 
 # 2. Create the NAT Gateway
 resource "google_compute_router_nat" "nat" {
-  name                               = "biotech-nat"
+  name                               = "cloud-nat"
   router                             = google_compute_router.router.name
   region                             = var.region
   nat_ip_allocate_option             = "AUTO_ONLY"
